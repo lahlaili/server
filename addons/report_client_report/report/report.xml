@@ -1,0 +1,38 @@
+<odoo>
+    <data>
+        <report
+            id="report_client_pdf"
+            string="Command Report"
+            model="report_client.report"
+            report_type="qweb-pdf"
+            name="report_client_report.command_report"
+        />
+        <template id="command_report">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <!-- Your report content goes here -->
+                    <div>
+                        <h2>Command Report for <t t-esc="doc.client"/></h2>
+                        <p>Period: <t t-esc="doc.start_date"/> to <t t-esc="doc.end_date"/></p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <!-- Add other command fields as needed -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.commands" t-as="command">
+                                    <tr>
+                                        <td><t t-esc="command.date"/></td>
+                                        <!-- Add other command fields as needed -->
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

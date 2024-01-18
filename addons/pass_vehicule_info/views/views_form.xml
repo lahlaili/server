@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+     
+
+    <record id="purchase_order_field" model="ir.ui.view">
+        <field name="name">purchase.order.inherit</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//tree//field[@name='name']" position="before">
+
+               
+		<field name="vehicle_id" optional="show"/>
+              
+
+            </xpath>
+		<xpath expr="//field[@name='partner_ref']" position="after">
+
+               
+		<field name="objet" />
+              
+
+            </xpath>
+
+
+            <xpath expr="//field[@name='currency_id']" position="after">
+
+                <field name="moyen_transport"/>
+                <label for="charge" attrs="{'invisible': [('moyen_transport', '=', False)]}"/>
+                <div class="o_row" name="charge" attrs="{'invisible': [('moyen_transport', '=', False)]}" readonly="1">
+                <field name="charge" readonly="1" /><span>t</span></div>
+                <label for="volume" attrs="{'invisible': [('moyen_transport', '=', False)]}"/>
+                        <div class="o_row" name="volume" attrs="{'invisible': [('moyen_transport', '=', False)]}" readonly="1">
+                <field name="volume" readonly="1" /><span>m³</span></div>
+                <field name="conducteur" attrs="{'invisible': [('moyen_transport', '=', False)]}" readonly="0"/>
+
+            </xpath>
+
+
+        </field>
+    </record>
+
+    <record id="stock_picking_field" model="ir.ui.view">
+        <field name="name">stock.picking.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='location_dest_id']" position="after">
+                <field name="moyen_transport"/>
+                <label for="charge" attrs="{'invisible': [('moyen_transport', '=', False)]}"/>
+                <div class="o_row" name="charge" attrs="{'invisible': [('moyen_transport', '=', False)]}" readonly="1">
+                <field name="charge" readonly="1" /><span>t</span></div>
+                <label for="volume" attrs="{'invisible': [('moyen_transport', '=', False)]}"/>
+                        <div class="o_row" name="volume" attrs="{'invisible': [('moyen_transport', '=', False)]}" readonly="1">
+                <field name="volume" readonly="1"/><span>m³</span></div>
+                <field name="conducteur" attrs="{'invisible': [('moyen_transport', '=', False)]}" readonly="0"/>
+            </xpath>
+
+            <xpath expr="//tree//field[@name='product_id']" position="after">
+                <field name="vehicle_id" invisible="1" optional="show"/> 
+                 <!-- <field name="related_vehicle" invisible="1"/>
+                 <field name="related_kilometrage" invisible="1"/>
+                 
+                <field name="kilometrage" attrs="{'required': [('related_kilometrage', '=', 'obligatoire')],'invisible': [('related_kilometrage', '=', 'non')]}" optional="show"/>
+                <field name="linked_employe" invisible="1"/>
+                <field name="employe_liste" attrs="{'required': [('linked_employe', '=', 'obligatoire')],'invisible': [('linked_employe', '=', 'non')]}" /> -->
+            </xpath>
+            <xpath expr="//field[@name='origin']" position="after">
+
+                <field name="bl_fournisseur"/>
+		<field name="nombre_voyage"/>
+
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="fleet_vehicle_field_form" model="ir.ui.view">
+        <field name="name">fleet.vehicle.inherit</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='co2_standard']" position="after">
+
+
+                 <label for="charge" />
+                      <div class="o_row" name="charge">
+                  
+                        <field name="charge"/><span>t</span>
+                      </div>
+                                
+                                
+                    <label for="volume"/>
+                        <div class="o_row" name="volume">
+                          <field name="volume"/><span>m³</span>
+                        </div>
+                                
+
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="sale_order_field_view" model="ir.ui.view">
+        <field name="name">sale.order.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+		    <field name="objet" />
+                <field name="moyen_transport"/>
+                <label for="charge" attrs="{'invisible': [('moyen_transport', '=', False)]}"/>
+                <div class="o_row" name="charge" attrs="{'invisible': [('moyen_transport', '=', False)]}" readonly="1">
+                <field name="charge" readonly="1" /><span>t</span></div>
+                <label for="volume" attrs="{'invisible': [('moyen_transport', '=', False)]}"/>
+                        <div class="o_row" name="volume" attrs="{'invisible': [('moyen_transport', '=', False)]}" readonly="1">
+                <field name="volume" readonly="1" /><span>m³</span>
+                        </div>
+                <field name="conducteur" attrs="{'invisible': [('moyen_transport', '=', False)]}" readonly="0"/>
+            </xpath>
+		<xpath expr="//field[@name='warehouse_id']" position="attributes">
+            <attribute name="invisible">1</attribute>
+        </xpath>
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                    <field name="warehouse_id" />
+            </xpath>
+
+
+        </field>
+    </record>
+
+
+    <record id="stock_picking_type_field_view" model="ir.ui.view">
+        <field name="name">stock.picking.type.inherit</field>
+        <field name="model">stock.picking.type</field>
+        <field name="inherit_id" ref="stock.view_picking_type_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='code']" position="after">
+                <field name="moyen_transport" attrs="{'invisible': [('code', '!=', 'internal')]}"/>
+                <label for="charge" attrs="{'invisible': [('moyen_transport', '=', False)]}"/>
+                <div class="o_row" name="charge" attrs="{'invisible': [('moyen_transport', '=', False)]}" readonly="1">
+                <field name="charge" readonly="1"/><span>t</span></div>
+                <label for="volume" attrs="{'invisible': [('moyen_transport', '=', False)]}"/>
+                        <div class="o_row" name="volume" attrs="{'invisible': [('moyen_transport', '=', False)]}" readonly="1">
+                <field name="volume" readonly="1"/><span>m³</span></div>
+                <field name="conducteur" attrs="{'invisible': [('moyen_transport', '=', False)]}" readonly="0"/>
+            </xpath>
+        </field>
+    </record>
+
+  
+
+    <template id="report_saleorder_customized" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//div[@id='informations']//div[1]" position="after">
+            <div t-if="doc.moyen_transport" class="col-auto col-3 mw-100 mb-2">
+                <strong>Moyen de transport :</strong>
+                <p class="m-0" t-field="doc.moyen_transport"/>
+
+            </div>
+            <div t-if="doc.charge" class="col-auto col-3 mw-100 mb-2">
+                <strong>Charge :</strong>
+                <p class="m-0" t-field="doc.charge"/>
+
+            </div>
+            <div t-if="doc.volume" class="col-auto col-3 mw-100 mb-2">
+                <strong>Volume :</strong>
+                <p class="m-0" t-field="doc.volume"/>
+
+            </div>
+            <div t-if="doc.conducteur" class="col-auto col-3 mw-100 mb-2">
+                <strong>Conducteur :</strong>
+                <p class="m-0" t-field="doc.conducteur"/>
+
+            </div>
+        </xpath>
+    </template>
+    <template id="report_delivery_document_customized" inherit_id="stock.report_delivery_document">
+        <xpath expr="//div[@class='page']//div[1]" position="after">
+            <div class="row mt32 mb32">
+                <div t-if="o.moyen_transport" class="col-auto">
+                    <strong>Moyen de transport :</strong>
+                    <p class="m-0" t-field="o.moyen_transport"/>
+
+                </div>
+                <div t-if="o.charge" class="col-auto">
+                    <strong>Charge :</strong>
+                    <p class="m-0" t-field="o.charge"/>
+
+                </div>
+                <div t-if="o.volume" class="col-auto">
+                    <strong>Volume :</strong>
+                    <p class="m-0" t-field="o.volume"/>
+
+                </div>
+                <div t-if="o.conducteur" class="col-auto">
+                    <strong>Conducteur :</strong>
+                    <p class="m-0" t-field="o.conducteur"/>
+
+                </div>
+            </div>
+        </xpath>
+    </template>
+
+
+
+
+	
+    
+
+  
+
+
+</odoo>

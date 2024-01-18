@@ -1,0 +1,52 @@
+<odoo>
+    <report
+        id="client_report"
+        model="res.partner"
+        report_type="qweb-pdf"
+        string="Command Report"
+        name="client_command.report_partner_command"
+        file="client_command.report_partner_command"
+    />
+
+    <template id="report_partner_command">
+        <t t-call="web.basic_layout">
+            <div class="container">
+                <div class="page">
+                    <h2 style="text-align: center; margin-bottom: 20px;">Partner Command Report</h2>
+
+                    <t t-foreach="docs" t-as="a">
+                        <div class="row" style="display: flex; align-items: center; margin-bottom: 20px;">
+                            <div class="col-6" style="margin-right: 20px;">
+                                <img t-if="a.image_1920" t-att-src="'data:image/png;base64,' + a.image_1920.decode('utf-8')" style="max-width: 150px; max-height: 150px;"/>
+                            </div>
+                            <div class="col-6">
+                                <p><strong>Nom :</strong><t t-esc="a.name"/> </p>
+                                <p><strong>Email :</strong><t t-esc="a.email"/> </p>
+                                <p><strong>Téléphone :</strong><t t-esc="a.phone"/> </p>
+                            </div>
+                        </div>
+                    </t>
+
+                    <table class="table table-bordered text-center" style="width: 100%; border-collapse: collapse;">
+                        <thead style="background-color: #f2f2f2;">
+                            <tr>
+                                <th style="padding: 10px;">Order Reference</th>
+                                <th style="padding: 10px;">Date</th>
+                                <th style="padding: 10px;">Montant total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="docs.sale_order_ids" t-as="order">
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #ddd;"><t t-esc="order.name"/></td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;"><t t-esc="order.date_order"/></td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;"><t t-esc="order.amount_total" /></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

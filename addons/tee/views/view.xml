@@ -1,0 +1,28 @@
+<odoo>
+    <record id="view_tee_form" model="ir.ui.view">
+        <field name="name">tee.form</field>
+        <field name="model">tee</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="description"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_tee_form" model="ir.actions.act_window">
+        <field name="name">Tee Form</field>
+        <field name="res_model">tee</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="tee.view_tee_form"/>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">Create a new Tee</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_tee" name="Tee" parent="base.menu_root" />
+    <menuitem id="menu_tee_form" name="Tee Form" parent="menu_tee" action="action_tee_form" />
+</odoo>

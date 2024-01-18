@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<odoo>
+    <template id="custom_report_template" inherit_id="web.external_layout_standard">
+          <xpath expr="//div[@name='company_address']" position="attributes">
+                <attribute name="style">display: none;</attribute>
+          </xpath>
+        <xpath expr="//div[@t-attf-class='footer o_standard_footer o_company_#{company.id}_layout']" position="replace">
+            <t t-set="company" t-value="env.company"/>
+            <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout">
+                <div class="text-center" style="border-top: 1px solid black;">
+                    <!-- Your custom footer content goes here -->
+                    S.A.R.L.A.U. au capital de
+                   <span t-field="company.capital"/>
+                    - R.C :
+                    <span t-field="company.rc"/>
+                    -T.P :
+                    <span t-field="company.tp"/>
+                    - CNSS :
+                    <span t-field="company.cnss"/>
+                    - I.F. :
+                    <span t-field="company.iff"/>
+                    - ICE.
+                    <span t-field="company.ice"/>
+
+                    <br/>
+
+                    <span t-field="company.street"/>
+                    <span t-field="company.street2"/>
+                    <span t-field="company.city"/>
+                    <span t-field="company.country_id"/>
+                    <span t-field="company.zip"/>
+
+                    <br/>
+
+                    Tél. :
+                    <span t-field="company.mobile"/>
+                    – Fax :
+                    <span t-field="company.phone"/>
+
+
+                </div>
+            </div>
+        </xpath>
+
+    </template>
+</odoo>

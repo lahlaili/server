@@ -1,0 +1,57 @@
+<odoo>
+    <data>
+        <!-- Form View -->
+        <record id="view_visite_form" model="ir.ui.view">
+            <field name="name">visite.form</field>
+            <field name="model">crm_custum.visite</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="date"/>
+                        <field name="type"/>
+                        <!-- Add any additional fields here -->
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tree View -->
+        <record id="view_visite_tree" model="ir.ui.view">
+            <field name="name">visite.tree</field>
+            <field name="model">crm_custum.visite</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="date"/>
+                    <field name="type"/>
+                    <!-- Add any additional fields here -->
+                </tree>
+            </field>
+        </record>
+
+        <!-- Action for Tree View -->
+        <record id="action_visite_tree" model="ir.actions.act_window">
+            <field name="name">Visites</field>
+            <field name="res_model">crm_custum.visite</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Menu for Visite -->
+        <menuitem id="visite_menu" name="Visites" sequence="2" parent="crm.crm_menu_root" action="action_visite_tree"/>
+
+        <record id="view_crm_lead_form" model="ir.ui.view">
+            <field name="name">crm.lead.form</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@class='oe_button_box']" position="inside">
+                    <button name="action_visite_tree"  type="object" class="oe_stat_button" icon="fa-eye">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_text">Visites</span>
+                        </div>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

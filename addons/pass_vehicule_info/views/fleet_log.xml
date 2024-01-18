@@ -1,0 +1,45 @@
+<!--<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+   <record id="fleet_vehicle_log_services_view_forminherit" model="ir.ui.view">
+        <field name="name">fleet.vehicle.log.services.form.inherit</field>
+        <field name="model">fleet.vehicle.log.services</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='vendor_id']" position="after">
+
+                <field name="liste_produits"/>
+
+            </xpath>
+            <xpath expr="//field[@name='odometer']" position="before">
+
+                <field name="ancien_kilometrage"/>
+                <label for="odometer" />
+            </xpath>
+            <field name="odometer" position="attributes">
+                        <attribute name="string">Nouveau Kilométrage</attribute>
+                
+            </field>
+             <xpath expr="//field[@name='odometer']" position="after">
+
+                <span>Km</span>
+
+            </xpath>
+
+            <xpath expr="//field[@name='odometer']" position="after">
+
+                <field name="quantite"/>
+                <label for="taux_consommation" />
+                <div class="o_row" name="taux_consommation">
+                    <field name="charge" />
+                    <span>%</span>
+                </div>
+               
+
+            </xpath>
+
+
+        </field>
+    </record>
+
+</odoo>-->

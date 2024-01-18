@@ -1,0 +1,26 @@
+<!-- report_template.xml -->
+
+<odoo>
+
+      <template id="client_order_report_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o" >
+                <t t-call="web.internal_layout">
+                <div class="page">
+                    <p><strong>Name:</strong> <t t-esc="o.sale_order.product_template_id"/></p>
+                    <p><strong>Email:</strong> <t t-esc="o.email"/></p>
+                </div>
+                </t>
+            </t>
+
+        </t>
+    </template>
+
+    <report
+        id="report_client_order"
+        model="client.order.report"
+        string="Client Order Report"
+        report_type="qweb-pdf"
+        file="client_order_report.client_order_report_template"
+    />
+</odoo>

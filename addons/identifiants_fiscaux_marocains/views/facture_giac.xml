@@ -1,0 +1,392 @@
+<?xml version="1.0" ?>
+<odoo>
+    <report
+            id="facture_giac"
+            model="account.move"
+            name="identifiants_fiscaux_marocains.id_facture_giac"
+            string="Facture Giac"
+            report_type="qweb-pdf"
+            multi="False"/>
+    <template id="id_facture_giac">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="o">
+                    <!--<t t-set="forced_vat"
+                       t-value="o.fiscal_position_id.foreign_vat"/>--> <!-- So that it appears in the footer of the report instead of the company VAT if it's set -->
+                    <div class="row">
+
+                        <t>
+                            <div class="offset-col-6 col-6" name="no_shipping">
+
+                                <t t-set="address">
+                                    <strong><span t-field="o.company_id.city"/>,le
+                                        <span t-field="o.invoice_date"/>
+                                    </strong>
+                                    <address class="mb-0" t-field="o.partner_id"
+                                             t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
+
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                    <div class="mt-5">
+                        <div class="page">
+                            <h2>
+                                <span>Facture N°
+                                    <span t-field="o.name"/>
+                                </span>
+
+                            </h2>
+
+
+                            <t t-set="display_discount" t-value="any(l.discount for l in o.invoice_line_ids)"/>
+                            <style>
+                                .table-strong-bordered {
+                                border-collapse: collapse;
+                                width: 100%;
+                                }
+
+                                .table-strong-bordered th, .table-strong-bordered td {
+                                border: 8px solid #000; /* Use a thicker border for a stronger appearance */
+                                padding: 25px; /* Add more space inside the td elements */
+                                }
+                            </style>
+
+                            <table class="table table-sm o_main_table table-bordered" name="invoice_line_table" style="height: 500px; padding: 90px;text-align: center; padding-top: 10px;">
+
+                                <thead>
+                                    <tr>
+                                        <th name="th_description" class="text-start" >
+                                            <span>Désignation</span>
+                                        </th>
+                                        <th name="th_priceunit"
+                                            t-attf-class="text-end {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                                            <span>Prix Unitaire en DH
+                                                <br/>
+                                                (HT)
+                                            </span>
+                                        </th>
+                                        <th name="th_quantity" class="text-end" >
+                                            <span>Nombre de jours</span>
+                                        </th>
+
+
+                                        <th name="th_subtotal" class="text-end" >
+                                            <span>Prix Total en DH (HT)</span>
+
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="invoice_tbody">
+                                    <t t-set="current_subtotal" t-value="0"/>
+                                    <t t-set="lines"
+                                       t-value="o.invoice_line_ids.sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)"/>
+
+                                    <t t-foreach="lines" t-as="line">
+                                        <!--<t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"
+                                           groups="account.group_show_line_subtotals_tax_excluded"/>-->
+                                        <t t-set="current_subtotal" t-value="current_subtotal + line.price_total"
+                                           groups="account.group_show_line_subtotals_tax_included"/>
+
+                                        <tr t-att-class="'bg-200 fw-bold o_line_section' if line.display_type == 'line_section' else 'fst-italic o_line_note' if line.display_type == 'line_note' else ''">
+                                            <t t-if="line.display_type == 'product'"
+                                               name="account_invoice_line_accountable">
+                                                <td name="account_invoice_line_name">
+                                                    <span t-field="line.name" t-options="{'widget': 'text'}"/>
+                                                </td>
+                                                <td t-attf-class="text-end {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                                                    <span class="text-nowrap" t-field="line.price_unit"/>
+                                                </td>
+                                                <td class="text-end">
+                                                    <span t-field="line.quantity"/>
+                                                    <span t-field="line.product_uom_id" groups="uom.group_uom"/>
+                                                </td>
+
+
+                                                <td class="text-end o_price_total">
+                                                    <span class="text-nowrap" t-field="line.price_subtotal"
+                                                          groups="account.group_show_line_subtotals_tax_excluded"/>
+                                                    <span class="text-nowrap" t-field="line.price_total"
+                                                          groups="account.group_show_line_subtotals_tax_included"/>
+                                                </td>
+                                            </t>
+
+                                        </tr>
+
+
+                                    </t>
+                                    <t t-set="tax_totals" t-value="o.tax_totals"/>
+
+                                    <t t-foreach="tax_totals['subtotals']" t-as="subtotal" t-name="TVA 20%">
+
+                                        <t t-set="subtotal_to_show" t-value="subtotal['name']"/>
+                                        <t t-foreach="tax_totals['groups_by_subtotal'][subtotal_to_show]"
+                                           t-as="amount_by_group">
+                                            <tr>
+                                                <t t-if="tax_totals['display_tax_base']">
+                                                    <td colspan="3">
+                                                        <span t-esc="amount_by_group['tax_group_name']"/>
+                                                        <span class="text-nowrap">on
+                                                            <t t-esc="amount_by_group['formatted_tax_group_base_amount']"/>
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-end o_price_total" colspan="3">
+                                                        <span class="text-nowrap"
+                                                              t-esc="amount_by_group['formatted_tax_group_amount']"/>
+                                                    </td>
+                                                </t>
+                                                <t t-else="">
+                                                    <td colspan="3" >
+                                                        <span class="text-nowrap"
+                                                              t-esc="amount_by_group['tax_group_name']"/>
+                                                    </td>
+                                                    <td class="text-end o_price_total" colspan="3">
+                                                        <span class="text-nowrap"
+                                                              t-esc="amount_by_group['formatted_tax_group_amount']"/>
+                                                    </td>
+                                                </t>
+                                            </tr>
+                                        </t>
+                                    </t>
+
+                                    <!--<t t-foreach="tax_totals['subtotals']" t-as="subtotal" t-name="TVA 20%">
+                                       
+                                        <t t-set="subtotal_to_show" t-value="subtotal['name']" />
+                                        <t t-call="account.tax_groups_totals" />
+                                    </t>-->
+
+                                    <t t-set="has_rounding"
+                                       t-value="'formatted_amount_total_rounded' in tax_totals"/>
+                                    <!--Total amount with all taxes- class="border-black o_total"-->
+                                    <tr>
+                                        <t t-if="has_rounding">
+                                            <td colspan="3">TOTAL TTC</td>
+                                        </t>
+                                        <t t-else="">
+                                            <td colspan="3" >
+                                                <strong>TOTAL TTC</strong>
+                                            </td>
+                                        </t><!--class="text-end"-->
+                                        <td  style="margin-left: auto; text-align: right;">
+                                            <span t-esc="tax_totals['formatted_amount_total']"/>
+                                        </td>
+                                    </tr><!--class="border-black o_subtotal"-->
+                                    <tr>
+                                        <td colspan="3">
+                                            <strong t-esc="'70% QUOTE PART GIAC TIERS PAYANT H.T'"/>
+                                        </td>
+
+                                        <!--<td class="text-end">
+                                            <span t-att-class="oe_subtotal_footer_separator"
+                                                  t-esc="float(subtotal['formatted_amount']) * 0.7"/>
+                                        </td>-->
+                                        <td class="text-end" >
+                                          <!--  <span t-att-class="oe_subtotal_footer_separator"
+                                                  t-esc="'%.2f' % round(((float(subtotal['formatted_amount'].replace('\xa0', '').replace(',', '').replace('DH', '')) * 0.7)*0.01),2)"/> DH -->
+                                            <span t-att-class="oe_subtotal_footer_separator" 
+                                                t-esc="'{:,.2f}'.format(round(((float(subtotal['formatted_amount'].replace('\xa0', '').replace(',', '').replace('DH', '')) * 0.7) * 0.01), 2)).replace(',', ' ') + ' DH'"/>
+                                        </td>
+                                    </tr>
+
+                                    <!--class="border-black o_subtotal"-->
+                                    <tr>
+                                        <td colspan="3">
+                                            <strong t-esc="'QUOTE PART ENTREPRISE TTC
+                                                    (30% du montant Total H.T + TVA du montant global)'"/>
+                                        </td>
+                                        <t t-foreach="tax_totals['groups_by_subtotal'][subtotal_to_show]"
+                                           t-as="amount_by_group">
+                                            <!--<td class="text-end">
+                                                <span t-att-class="oe_subtotal_footer_separator"
+                                                      t-esc="(float(subtotal['formatted_amount']) * 0.3) + float(amount_by_group['formatted_tax_group_amount'])"/>
+                                            </td>-->
+                                            <td  class="text-end">
+                                             <!--   <span t-att-class="oe_subtotal_footer_separator"
+                                                      t-esc="round(((float(subtotal['formatted_amount'].replace('\xa0', '').replace(',', '').replace('DH', '')) * 0.3) + float(amount_by_group['formatted_tax_group_amount'].replace('\xa0', '').replace(',', '').replace('DH', '')))*0.01), 2)"/> DH
+                                          -->  
+                                            
+                                            <!--<span t-att-class="oe_subtotal_footer_separator"
+                                                  t-esc="'%.2f' % round(
+                                                          (
+                                                              (float(subtotal['formatted_amount'].replace('\xa0', '').replace(',', '').replace('DH', '')) * 0.3) +
+                                                              float(amount_by_group['formatted_tax_group_amount'].replace('\xa0', '').replace(',', '').replace('DH', ''))
+                                                          ) * 0.01
+                    , 2)"/> DH -->
+
+                                                <span t-att-class="oe_subtotal_footer_separator"
+                                                  t-esc="'{:,.2f}'.format(round(
+                                                          (
+                                                              (float(subtotal['formatted_amount'].replace('\xa0', '').replace(',', '').replace('DH', '')) * 0.3) +
+                                                              float(amount_by_group['formatted_tax_group_amount'].replace('\xa0', '').replace(',', '').replace('DH', ''))
+                                                          ) * 0.01
+                                                       , 2)).replace(',', ' ') + ' DH'"/> 
+                                                
+                                            </td>
+                                        </t>
+                                    </tr>
+                                    <tr t-if="has_rounding">
+                                        <td>
+                                            <strong>Total Rounded</strong>
+                                        </td>
+                                        <td class="text-end" >
+                                            <span t-esc="tax_totals['formatted_amount_total_rounded']"/>
+                                        </td>
+                                    </tr>
+
+
+                                    <!--Payments-->
+                                    <t t-if="print_with_payments">
+                                        <t t-if="o.payment_state != 'invoicing_legacy'">
+                                            <t t-set="payments_vals"
+                                               t-value="o.sudo().invoice_payments_widget and o.sudo().invoice_payments_widget['content'] or []"/>
+
+                                            <!--<t t-if="len(payments_vals) &gt; 0">
+                                                <tr class="border-black">
+                                                    <td>
+                                                        <strong>Total TTC</strong>
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <span t-field="o.amount_residual"/>
+                                                    </td>
+                                                </tr>
+                                            </t>-->
+                                        </t>
+                                    </t>
+
+                                </tbody>
+                            </table>
+
+                            <!--<div class="clearfix mb-4">
+                                <div id="total" class="row">
+                                    <div t-attf-class="#{'col-6' if report_type != 'html' else 'col-sm-7 col-md-6'} ms-auto">
+                                        <table class="table table-sm table-borderless"
+                                               style="page-break-inside: avoid;">
+
+                                          
+                                            <t t-set="tax_totals" t-value="o.tax_totals"/>
+                                            <t t-foreach="tax_totals['subtotals']" t-as="subtotal" t-name="TVA 20%">
+                                               
+
+
+                                                <t t-set="subtotal_to_show" t-value="subtotal['name']"/>
+                                                <t t-call="account.tax_groups_totals"/>
+                                            </t>
+
+                                            <t t-set="has_rounding"
+                                               t-value="'formatted_amount_total_rounded' in tax_totals"/>
+                                           
+                                            <tr class="border-black o_total">
+                                                <t t-if="has_rounding">
+                                                    <td>TOTAL TTC</td>
+                                                </t>
+                                                <t t-else="">
+                                                    <td>
+                                                        <strong>TOTAL TTC</strong>
+                                                    </td>
+                                                </t>
+                                                <td class="text-end">
+                                                    <span t-esc="tax_totals['formatted_amount_total']"/>
+                                                </td>
+                                            </tr>
+                                            <tr class="border-black o_subtotal">
+                                                <td>
+                                                    <strong t-esc="'70% QUOTE PART GIAC TIERS PAYANT H.T'"/>
+                                                </td>
+
+                                              
+                                                <td class="text-end">
+                                                    <span t-att-class="oe_subtotal_footer_separator"
+                                                          t-esc="round((float(subtotal['formatted_amount'].replace('\xa0', '').replace(',', '').replace('DH', '')) * 0.7)*0.01, 2)"/> DH
+                                                </td>
+                                            </tr>
+
+
+                                            <tr class="border-black o_subtotal">
+                                                <td>
+                                                    <strong t-esc="'QUOTE PART ENTREPRISE TTC
+                                                    (30% du montant Total H.T + TVA du montant global)'"/>
+                                                </td>
+                                                <t t-foreach="tax_totals['groups_by_subtotal'][subtotal_to_show]"
+                                                   t-as="amount_by_group">
+                                                   
+                                                    <td class="text-end">
+                                                        <span t-att-class="oe_subtotal_footer_separator"
+                                                              t-esc="((float(subtotal['formatted_amount'].replace('\xa0', '').replace(',', '').replace('DH', '')) * 0.3) + float(amount_by_group['formatted_tax_group_amount'].replace('\xa0', '').replace(',', '').replace('DH', '')))*0.01.toFixed(2)"/> DH
+                                                    </td>
+                                                </t>
+                                            </tr>
+                                            <tr t-if="has_rounding">
+                                                <td>
+                                                    <strong>Total Rounded</strong>
+                                                </td>
+                                                <td class="text-end">
+                                                    <span t-esc="tax_totals['formatted_amount_total_rounded']"/>
+                                                </td>
+                                            </tr>
+
+
+                                       
+                                            <t t-if="print_with_payments">
+                                                <t t-if="o.payment_state != 'invoicing_legacy'">
+                                                    <t t-set="payments_vals"
+                                                       t-value="o.sudo().invoice_payments_widget and o.sudo().invoice_payments_widget['content'] or []"/>
+
+                                                 
+                                                </t>
+                                            </t>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>-->
+                        </div>
+
+                        <div t-field="o.invoice_payment_term_id.note" name="payment_term"/>
+                        <t t-if="o.invoice_payment_term_id.display_on_invoice and payment_term_details">
+                            <div t-if="o.show_payment_term_details" id="total_payment_term_details_table" class="row">
+                                <div t-attf-class="#{'col-7' if report_type != 'html' else 'col-sm-7 col-md-6'} mt-2 mb-2">
+                                    <table class="table table-sm" style="page-break-inside: avoid;">
+                                        <th class="border-black text-start">
+                                            Due Date
+                                        </th>
+                                        <th class="border-black text-end">
+                                            Amount Due
+                                        </th>
+                                        <th t-if="o.show_discount_details" class="border-black text-end">
+                                            Discount
+                                        </th>
+                                        <t t-foreach="payment_term_details" t-as="term">
+                                            <tr>
+                                                <td t-esc="term.get('date')" class="text-start"/>
+                                                <td t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"
+                                                    t-esc="term.get('amount')" class="text-end"/>
+                                                <td t-if="term.get('discount_date')" class="text-end">
+                                                    <span t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"
+                                                          t-esc="term.get('discount_amount_currency')"/>
+                                                    if paid before
+                                                    <span t-esc="term.get('discount_date')"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </table>
+                                </div>
+                            </div>
+                        </t>
+
+
+                    </div>
+                    <div style="text-align: center;">
+                        <h5>Arrêtée la présente facture à la somme de :
+                            <strong>
+                                <span t-field="o.amount_in_words"/>
+                                Dirhams TTC.
+                            </strong>
+                        </h5>
+                    </div>
+
+                </t>
+
+            </t>
+        </t>
+    </template>
+
+</odoo>

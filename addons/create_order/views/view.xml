@@ -1,0 +1,21 @@
+<odoo>
+     <record id="the_fuckin_view_al_asshol" model="ir.ui.view">
+            <field name="name">command.report.form</field>
+            <field name="model">create_order</field>
+            <field name="arch" type="xml">
+                <form>
+
+                    <button string="Créé" name="order_create" />
+                </form>
+            </field>
+        </record>
+
+    <record id="create_order_action" model="ir.actions.act_window">
+            <field name="name">Order Creater</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="the_fuckin_view_al_asshol"/>
+    </record>
+            <menuitem id="create_order_menu"  parent="account.menu_finance" name="Create client" action="create_order_action"/>
+
+</odoo>

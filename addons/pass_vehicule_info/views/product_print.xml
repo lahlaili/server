@@ -1,0 +1,15 @@
+<odoo>
+    <record id="view_product_template_form_inherit" model="ir.ui.view">
+        <field name="name">product.product.form</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <field name="optional_product_ids" position="before">
+                    <field name="Arrondi"/>
+
+            </field>
+
+
+        </field>
+    </record>
+</odoo>

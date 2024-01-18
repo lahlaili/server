@@ -1,0 +1,41 @@
+<odoo>
+    <data>
+        <!-- Extend the form view for res.partner -->
+        <record id="view_res_partner_form_inherit" model="ir.ui.view">
+            <field name="name">res.partner.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+            <field name="vat" position="attributes">
+                <attribute name="invisible">True</attribute>
+            </field>
+            
+                <data>
+
+
+                    <field name="vat" position="after">
+                        <field name="date_creation"/>
+                    </field>
+                    <field name="vat" position="before">
+                        <field name="industry_id"/>
+                        <field name="organisme_finance"/>
+                        <field name="activite"/>
+                        <field name="respo"/>
+                        <field name="x_fax"/>
+                    </field>
+                <!--
+                    <page name="contact_addresses" position="inside"  >
+                        <group>
+                            <field name="nom_du_responsable"/>
+                        </group>
+                    </page>
+                -->
+
+
+
+                </data>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,29 @@
+<odoo>
+    <data>
+        <record id="view_custom_report_client_report" model="ir.ui.view">
+            <field name="name">command.report.form</field>
+            <field name="model">report_client.report</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="client_id"/>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                    </group>
+
+                        <button string="Imprimer" type="object" class="oe_highlight" name="generate_report"/>
+
+                </form>
+            </field>
+        </record>
+
+        <record id="action_report_client_report" model="ir.actions.act_window">
+            <field name="name">Client Commands</field>
+            <field name="res_model">report_client.report</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="report_client_report.view_custom_report_client_report"/>
+        </record>
+        <menuitem id="report_client_report_act"  sequence="5"  parent="account.menu_finance" name="Client Commands" action="action_report_client_report"/>
+
+    </data>
+</odoo>

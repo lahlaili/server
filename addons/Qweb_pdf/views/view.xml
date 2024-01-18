@@ -1,0 +1,28 @@
+<odoo>
+    <data>
+
+
+       <record id="view_custom_partner_extension" model="ir.ui.view">
+            <field name="name">res.partner.custom.extension</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field type="" name="name"/>
+
+                    </group>
+                </form>
+            </field>
+        </record>
+
+
+
+
+    <record id="action_qweb_pdf_window" model="ir.actions.act_window" >
+        <field name="name">additional</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_id" ref="Qweb_pdf.view_custom_partner_extension"/>
+    </record>
+    <menuitem id="qweb_pdf_act" parent="account.menu_finance" name="qweb_pdf" action="action_qweb_pdf_window"  />
+ </data>
+</odoo>

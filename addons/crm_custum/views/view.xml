@@ -1,0 +1,43 @@
+<odoo>
+    <data>
+        <record id="view_crm_lead_form_inherit" model="ir.ui.view">
+            <field name="name">crm.lead.form.inherit</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='internal_notes']" position="before">
+                    <page id="page_detail_consultation" sequence="1" position="before"  name="Détail consultation" >
+                            <group sequence="1">
+                                <!-- Add fields for Date de consultation, Source, Type de la demande, etc. -->
+                                 <field name="date_consultation"/>
+                                <field name="source"/>
+                                <field name="type_demande"/>
+                                <field name="demandeur" string="Demandeur" widget="many2one"/>
+                                <field name="email_demandeur" string="Email demandeur" widget="email"/>
+                                <field name="telephone_demandeur" string="Téléphone demandeur" widget="phone"/>
+                                <field name="secteur_activite" string="Secteur d'activité" widget="many2one"/>
+                            </group>
+                    </page>
+                </xpath>
+                 <field name="email_from" position="replace">
+                    <div class="o_row o_row_readonly">
+                        <button name="mail_action_blacklist_remove" class="fa fa-ban text-danger" title="This email is blacklisted for mass mailings. Click to unblacklist." type="object" context="{'default_email': email_from}" groups="base.group_user" attrs="{'invisible': [('is_blacklisted', '=', False)]}"/>
+                        <field name="email_from" string="Email Client/Prospect" widget="email"/>
+                        <span class="fa fa-exclamation-triangle text-warning oe_edit_only" title="By saving this change, the customer email will also be updated." attrs="{'invisible': [('partner_email_update', '=', False)]}"/>
+                    </div>
+                </field>
+                <field name="phone" position="replace">
+                    <div class="o_row o_row_readonly">
+                        <button name="phone_action_blacklist_remove" class="fa fa-ban text-danger" title="This phone number is blacklisted for SMS Marketing. Click to unblacklist." type="object" context="{'default_phone': telephone_demandeur}" groups="base.group_user" attrs="{'invisible': [('phone_blacklisted', '=', False)]}"/>
+                        <field name="phone" widget="phone" string="Phone Client/Prospect"/>
+                        <span class="fa fa-exclamation-triangle text-warning oe_edit_only" title="By saving this change, the customer phone number will also be updated." attrs="{'invisible': [('partner_phone_update', '=', False)]}"/>
+                    </div>
+                </field>
+
+
+            </field>
+        </record>
+
+
+    </data>
+</odoo>
